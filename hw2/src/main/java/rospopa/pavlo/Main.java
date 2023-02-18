@@ -10,6 +10,7 @@ public class Main {
      * 3. Finds all tuples consisting of 3 points that can form a triangle.
      * 4. Calculates perimeter of triangles and finds the largest triangle.
      * 5. Prints result into stdout.
+     * Algorithm analysis: program has time complexity O(n^3); n max = 100 thus the program executes magnitude of 10^6 operations < 10^9.
      */
     public static void main(String[] args) {
         var in = new Scanner(System.in);
