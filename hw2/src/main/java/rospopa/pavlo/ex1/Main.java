@@ -1,4 +1,4 @@
-package rospopa.pavlo;
+package rospopa.pavlo.ex1;
 
 import java.util.Scanner;
 
