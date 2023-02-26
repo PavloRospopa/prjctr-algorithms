@@ -1,16 +1,22 @@
 package rospopa.pavlo.ex2;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 
-    public static void main(String[] args) {
-        var scanner = new Scanner(System.in);
-        var n = scanner.nextInt();
-        var x = scanner.nextInt();
+    public static void main(String[] args) throws IOException {
+        var reader = new BufferedReader(new InputStreamReader(System.in));
+
+        var input = reader.readLine().split(" ");
+        var n = Integer.parseInt(input[0]);
+        var x = Integer.parseInt(input[1]);
+
+        input = reader.readLine().split(" ");
         var arr = new int[n];
         for (int i = 0; i < n; i++) {
-            arr[i] = scanner.nextInt();
+            arr[i] = Integer.parseInt(input[i]);
         }
 
         var num = 0;
