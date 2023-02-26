@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 
 public class Main {
 
+    /**
+     * Solution for <a href="https://cses.fi/problemset/task/1660">Subarray Sums I problem</a>
+     */
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
 
