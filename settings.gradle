@@ -1,3 +1,5 @@
 rootProject.name = 'prjctr-algorithms'
 
 include 'hw2'
+include 'hw3'
+
