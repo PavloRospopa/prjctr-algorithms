@@ -13,12 +13,12 @@ public class Main {
             height[i] = scanner.nextInt();
         }
 
-        var maxArea = maxArea(height);
+        var maxArea = maxAreaFast(height);
 
         System.out.println("result " + maxArea);
     }
 
-    private static int maxArea(int[] height) {
+    private static int maxAreaSlow(int[] height) {
         var maxArea = 0;
         for (int i = 0; i < height.length; i++) {
             for (int j = i + 1; j < height.length; j++) {
@@ -26,6 +26,29 @@ public class Main {
                 if (area > maxArea) {
                     maxArea = area;
                 }
+            }
+        }
+
+        return maxArea;
+    }
+
+    private static int maxAreaFast(int[] height) {
+        var l = 0;
+        var r = height.length - 1;
+
+        var maxArea = 0;
+        while (l != r) {
+            var hl = height[l];
+            var hr = height[r];
+            var area = (r - l) * Math.min(hl, hr);
+            if (area > maxArea) {
+                maxArea = area;
+            }
+
+            if (hl > hr) {
+                r--;
+            } else {
+                l++;
             }
         }
 
