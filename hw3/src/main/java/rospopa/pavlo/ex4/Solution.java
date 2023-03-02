@@ -33,7 +33,7 @@ public class Solution {
             var friend = friends[r];
             cumulativeFriendshipFactor += friend.friendshipFactor;
 
-            while (friends[r].money - poorestFriend.money >= d) {
+            while (friend.money - poorestFriend.money >= d) {
                 cumulativeFriendshipFactor -= poorestFriend.friendshipFactor;
                 l++;
                 poorestFriend = friends[l];
