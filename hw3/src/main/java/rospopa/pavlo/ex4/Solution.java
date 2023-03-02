@@ -27,8 +27,8 @@ public class Solution {
 
         var l = 0;
         var poorestFriend = friends[l];
-        var cumulativeFriendshipFactor = 0;
-        var maxCumulativeFriendshipFactor = 0;
+        var cumulativeFriendshipFactor = 0L;
+        var maxCumulativeFriendshipFactor = 0L;
         for (int r = 0; r < n; r++) {
             var friend = friends[r];
             cumulativeFriendshipFactor += friend.friendshipFactor;
