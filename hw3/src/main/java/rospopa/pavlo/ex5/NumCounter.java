@@ -44,18 +44,11 @@ public class NumCounter {
             if (counter.increment(rNum) >= k) {
                 subarrayCounter += n - r;
 
-                while (l < n) {
-                    counter.decrement(arr[l]);
-                    l++;
-                    if (counter.get(rNum) >= k) {
-                        subarrayCounter += n - r;
-                    } else {
-                        break;
-                    }
+                while (counter.decrement(arr[l++]) >= k || counter.get(rNum) >= k) {
+                    subarrayCounter += n - r;
                 }
             }
         }
-
         System.out.println(subarrayCounter);
     }
 }
