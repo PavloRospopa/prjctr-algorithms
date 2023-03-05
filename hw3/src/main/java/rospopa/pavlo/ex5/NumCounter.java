@@ -3,26 +3,43 @@ package rospopa.pavlo.ex5;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NumCounter {
-    static final int NUM_MAX_VALUE = 1000000000;
 
-    final int[] numCounters;
+    final Map<Integer, Integer> numCounters;
 
-    NumCounter(int n) {
-        this.numCounters = new int[n];
+    NumCounter() {
+        this.numCounters = new HashMap<>();
     }
 
     int get(int num) {
-        return numCounters[num];
+        return numCounters.get(num);
     }
 
     int increment(int num) {
-        return ++numCounters[num];
+        var counter = numCounters.get(num);
+        if (counter == null) {
+            numCounters.put(num, 1);
+            return 1;
+        } else {
+            counter = counter + 1;
+            numCounters.put(num, counter);
+            return counter;
+        }
     }
 
     int decrement(int num) {
-        return --numCounters[num];
+        var counter = numCounters.get(num);
+        if (counter == null) {
+            numCounters.put(num, 0);
+            return 0;
+        } else {
+            counter = counter - 1;
+            numCounters.put(num, counter);
+            return counter;
+        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -40,7 +57,7 @@ public class NumCounter {
 
         var l = 0;
         var subarrayCounter = 0;
-        var counter = new NumCounter(NUM_MAX_VALUE);
+        var counter = new NumCounter();
         for (int r = 0; r < n; r++) {
             var rNum = arr[r];
             if (counter.increment(rNum) >= k) {
