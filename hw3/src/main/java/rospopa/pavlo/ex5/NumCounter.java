@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class NumCounter {
+    static final int NUM_MAX_VALUE = 1000000000;
+
     final int[] numCounters;
 
     NumCounter(int n) {
@@ -38,7 +40,7 @@ public class NumCounter {
 
         var l = 0;
         var subarrayCounter = 0;
-        var counter = new NumCounter(n);
+        var counter = new NumCounter(NUM_MAX_VALUE);
         for (int r = 0; r < n; r++) {
             var rNum = arr[r];
             if (counter.increment(rNum) >= k) {
