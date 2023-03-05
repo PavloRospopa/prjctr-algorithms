@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NumCounter {
-
     final Map<Integer, Integer> numCounters;
 
     NumCounter() {
@@ -32,14 +31,9 @@ public class NumCounter {
 
     int decrement(int num) {
         var counter = numCounters.get(num);
-        if (counter == null) {
-            numCounters.put(num, 0);
-            return 0;
-        } else {
-            counter = counter - 1;
-            numCounters.put(num, counter);
-            return counter;
-        }
+        counter = counter - 1;
+        numCounters.put(num, counter);
+        return counter;
     }
 
     public static void main(String[] args) throws IOException {
