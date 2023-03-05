@@ -43,8 +43,15 @@ public class NumCounter {
             var rNum = arr[r];
             if (counter.increment(rNum) >= k) {
                 subarrayCounter += n - r;
-                while (l < n - 1 && (counter.decrement(arr[l++]) >= k || counter.get(rNum) >= k)) {
-                    subarrayCounter += n - r;
+
+                while (l < n) {
+                    counter.decrement(arr[l]);
+                    l++;
+                    if (counter.get(rNum) >= k) {
+                        subarrayCounter += n - r;
+                    } else {
+                        break;
+                    }
                 }
             }
         }
