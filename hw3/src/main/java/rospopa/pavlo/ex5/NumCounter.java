@@ -56,7 +56,7 @@ public class NumCounter {
         }
 
         var l = 0;
-        var subarrayCounter = 0;
+        var subarrayCounter = 0L;
         var counter = new NumCounter();
         for (int r = 0; r < n; r++) {
             var rNum = arr[r];
