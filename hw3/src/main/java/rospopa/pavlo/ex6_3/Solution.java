@@ -54,9 +54,9 @@ public class Solution {
         return k - calculateNumOfDigitsForSeq(bad) > 1 ? '0' : '1';
     }
 
-    private static int calculateNumOfDigitsForSeq(int highestPowerOfTen) {
-        var numOfOnes = 1 + highestPowerOfTen;
-        var numOfZeros = numOfOnes * highestPowerOfTen / 2;
+    private static long calculateNumOfDigitsForSeq(int highestPowerOfTen) {
+        long numOfOnes = 1 + highestPowerOfTen;
+        long numOfZeros = numOfOnes * highestPowerOfTen / 2;
         return numOfOnes + numOfZeros;
     }
 }
