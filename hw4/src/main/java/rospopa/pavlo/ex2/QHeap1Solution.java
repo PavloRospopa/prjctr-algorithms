@@ -42,39 +42,17 @@ public class QHeap1Solution {
         }
 
         void delete(int v) {
-            del(find(1, v));
-        }
-
-        private int find(int i, int v) {
-            if (arr[i] == v) {
-                return i;
+            int i = 1;
+            while (arr[i] != v) {
+                i++;
             }
 
-            if (arr[2 * i] <= v) {
-                find(2 * i, v);
-            }
-            if (arr[2 * i + 1] <= v) {
-                find(2 * i + 1, v);
-            }
-
-            return -1;
-        }
-
-        private void del(int i) {
             arr[i] = arr[size--];
             siftdown(i);
         }
 
         int peek() {
             return arr[1];
-        }
-
-        int pop() {
-            var min = peek();
-
-            arr[1] = arr[size--];
-            siftdown(1);
-            return min;
         }
 
         private void siftdown(int i) {
@@ -94,11 +72,9 @@ public class QHeap1Solution {
         }
 
         private void siftup(int i) {
-            var p = i / 2;
-            while (arr[p] > arr[i]) {
-                swap(i, p);
-                i = p;
-                p = i / 2;
+            while (i > 1 && arr[i / 2] > arr[i]) {
+                swap(i, i / 2);
+                i = i / 2;
             }
         }
 
