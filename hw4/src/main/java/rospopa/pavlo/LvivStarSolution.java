@@ -71,16 +71,16 @@ public class LvivStarSolution {
             precalculatedCounts[clusterOfStation(i)]--;
         }
 
-        int count(int fromStationId, int toStationId) {
+        long count(int fromStationId, int toStationId) {
             var l = fromStationId - 1;
             var r = toStationId - 1;
-            var result = 0;
-
             if (l == r) {
                 return clientsPerStation[l];
             } else if (clusterOfStation(l) == clusterOfStation(r)) {
                 return countClientsOfStations(l, r);
             }
+
+            var result = 0L;
 
             var leftmostCluster = clusterOfStation(l);
             if (l % clusterSize > 0) {
@@ -113,7 +113,7 @@ public class LvivStarSolution {
             return firstStationInCluster(c + 1) - 1;
         }
 
-        private int countClientsOfStations(int l, int r) {
+        private long countClientsOfStations(int l, int r) {
             var result = 0;
             for (int i = l; i <= r; i++) {
                 result += clientsPerStation[i];
