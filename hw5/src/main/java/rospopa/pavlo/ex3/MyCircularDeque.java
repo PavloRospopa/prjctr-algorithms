@@ -1,7 +1,6 @@
 package rospopa.pavlo.ex3;
 
 public class MyCircularDeque {
-    private final int k;
     private final int capacity;
     private final int[] arr;
     private int length;
@@ -9,15 +8,13 @@ public class MyCircularDeque {
     private int tail;
 
     public MyCircularDeque(int k) {
-        this.k = k;
-        // internal capacity
-        capacity = k + 1;
+        capacity = k;
         arr = new int[capacity];
         length = 0;
-        // pointing to sentinel head
-        head = 0;
-        // pointing to
-        tail = 1;
+        // insertion index of circular deque head
+        head = -1;
+        // insertion index of circular deque tail
+        tail = 0;
     }
 
     public boolean insertFront(int value) {
@@ -25,12 +22,12 @@ public class MyCircularDeque {
             return false;
         }
 
-        head--;
         if (head < 0) {
             head = capacity - 1;
         }
         arr[head] = value;
         length++;
+        head--;
         return true;
     }
 
@@ -71,14 +68,14 @@ public class MyCircularDeque {
         if (isEmpty()) {
             return -1;
         }
-        return arr[head];
+        return arr[(head + 1) % capacity];
     }
 
     public int getRear() {
         if (isEmpty()) {
             return -1;
         }
-        return arr[tail - 1];
+        return arr[(tail - 1 < 0) ? capacity - 1 : tail - 1];
     }
 
     public boolean isEmpty() {
@@ -86,6 +83,6 @@ public class MyCircularDeque {
     }
 
     public boolean isFull() {
-        return length == k;
+        return length == capacity;
     }
 }
