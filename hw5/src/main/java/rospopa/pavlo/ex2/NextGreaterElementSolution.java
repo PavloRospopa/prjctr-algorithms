@@ -1,10 +1,9 @@
 package rospopa.pavlo.ex2;
 
-import rospopa.pavlo.FixedArrayStack;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 
 public class NextGreaterElementSolution {
@@ -27,12 +26,12 @@ public class NextGreaterElementSolution {
     public int[] nextGreaterElements(int[] nums) {
         var n = nums.length;
         var result = new int[n];
-        var waiting = new FixedArrayStack<>(new Num[n]);
+        var waiting = new ArrayDeque<Num>();
 
         for (int j = 0; j % n < n && j / n < 2; j++) {
             var i = j % n;
-            while (waiting.top() != null) {
-                var w = waiting.top();
+            while (waiting.peek() != null) {
+                var w = waiting.peek();
                 if (j >= n && i >= w.i) {
                     // no greater element exists for waiting num
                     waiting.pop();
