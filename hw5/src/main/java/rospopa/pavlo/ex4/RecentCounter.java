@@ -1,10 +1,11 @@
 package rospopa.pavlo.ex4;
 
-import rospopa.pavlo.ex3.MyCircularDeque;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class RecentCounter {
     private final int timeWindowInMillis;
-    private final MyCircularDeque deque;
+    private final Queue<Integer> queue;
 
     public static void main(String[] args) {
         RecentCounter recentCounter = new RecentCounter(3000);
@@ -16,14 +17,14 @@ public class RecentCounter {
 
     public RecentCounter(int timeWindowInMillis) {
         this.timeWindowInMillis = timeWindowInMillis;
-        deque = new MyCircularDeque(timeWindowInMillis + 2);
+        queue = new ArrayDeque<>(timeWindowInMillis + 2);
     }
 
     public int ping(int t) {
-        deque.insertLast(t);
-        while (deque.getFront() < t - timeWindowInMillis) {
-            deque.deleteFront();
+        queue.add(t);
+        while (queue.element() < t - timeWindowInMillis) {
+            queue.remove();
         }
-        return deque.getLength();
+        return queue.size();
     }
 }
