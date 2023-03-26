@@ -85,4 +85,8 @@ public class MyCircularDeque {
     public boolean isFull() {
         return length == capacity;
     }
+
+    public int getLength() {
+        return length;
+    }
 }
