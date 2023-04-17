@@ -1,27 +1,29 @@
 package rospopa.pavlo.ex1;
 
 class MyHashMap {
-    private final int resizeFactor;
+    private final double resizeFactor;
     private final double loadFactor;
     private final int a;
     private final int b;
     private Entry[] arr;
     private int length;
+    private int capacity;
 
     public MyHashMap() {
-        resizeFactor = 2;
+        resizeFactor = 1.5;
         loadFactor = 0.75;
-        arr = new Entry[10];
-        a = (int) (Math.random() * 100);
-        b = (int) (Math.random() * 100);
+        capacity = 10;
+        arr = new Entry[capacity];
+        a = 1009;
+        b = 9973;
     }
 
     public void put(int key, int value) {
-        if ((double) getLength() / arr.length > loadFactor) {
+        if (getLength() + 1.0 / capacity > loadFactor) {
             increaseCapacity();
         }
 
-        var index = hash(key) % arr.length;
+        var index = hash(key) % capacity;
         var head = arr[index];
         var entry = findEntry(key, head);
         if (entry != null) {
@@ -33,7 +35,7 @@ class MyHashMap {
     }
 
     public int get(int key) {
-        var index = hash(key) % arr.length;
+        var index = hash(key) % capacity;
         var head = arr[index];
         var entry = findEntry(key, head);
         return entry != null ? entry.value : -1;
@@ -41,20 +43,17 @@ class MyHashMap {
 
     private Entry findEntry(int key, Entry head) {
         Entry result = null;
-        var entry = new Entry(-1, -1, head);
-        while (entry.next != null) {
-            entry = entry.next;
+        for (var entry = head; entry != null; entry = entry.next) {
             if (entry.key == key) {
                 result = entry;
                 break;
             }
         }
-
         return result;
     }
 
     public void remove(int key) {
-        var index = hash(key) % arr.length;
+        var index = hash(key) % capacity;
         var head = arr[index];
         var sentinel = new Entry(-1, -1, head);
         for (var entry = sentinel; entry != null; entry = entry.next) {
@@ -78,25 +77,30 @@ class MyHashMap {
     }
 
     private void increaseCapacity() {
-        var newArr = new Entry[arr.length * resizeFactor];
-        for (Entry arrHead : arr) {
-            if (arrHead == null) {
+        capacity = (int) (capacity * resizeFactor);
+        var newArr = new Entry[capacity];
+        for (Entry head : arr) {
+            if (head == null) {
                 continue;
             }
 
-            var index = hash(arrHead.key) % newArr.length;
-            var newArrHead = newArr[index];
-            if (newArrHead == null) {
-                newArr[index] = arrHead;
-            } else {
-                var entry = newArrHead;
-                while (entry.next != null) {
-                    entry = entry.next;
-                }
-                entry.next = arrHead;
-            }
+            var index = hash(head.key) % capacity;
+            newArr[index] = join(newArr[index], head);
         }
         arr = newArr;
+    }
+
+    private Entry join(Entry head, Entry tail) {
+        if (head == null) {
+            return tail;
+        }
+
+        var entry = head;
+        while (entry.next != null) {
+            entry = entry.next;
+        }
+        entry.next = tail;
+        return head;
     }
 
     static class Entry {
