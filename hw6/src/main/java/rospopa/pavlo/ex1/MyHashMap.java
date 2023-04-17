@@ -79,7 +79,23 @@ class MyHashMap {
 
     private void increaseCapacity() {
         var newArr = new Entry[arr.length * resizeFactor];
-        System.arraycopy(arr, 0, newArr, 0, arr.length);
+        for (Entry arrHead : arr) {
+            if (arrHead == null) {
+                continue;
+            }
+
+            var index = hash(arrHead.key) % newArr.length;
+            var newArrHead = newArr[index];
+            if (newArrHead == null) {
+                newArr[index] = arrHead;
+            } else {
+                var entry = newArrHead;
+                while (entry.next != null) {
+                    entry = entry.next;
+                }
+                entry.next = arrHead;
+            }
+        }
         arr = newArr;
     }
 
