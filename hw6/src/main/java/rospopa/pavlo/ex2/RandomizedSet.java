@@ -3,25 +3,35 @@ package rospopa.pavlo.ex2;
 import java.util.Random;
 
 class RandomizedSet {
-    private final int initialCapacity;
+    private final Random random;
     private final double loadFactor;
     private final int resizeFactor;
-    private final Random random;
-    private Integer[] set;
+    private final double loadFactorDividedByResizeFactor;
+    private final int initialCapacity;
     private int capacity;
+    private double capacityMultipliedByLoadFactor;
+    private double capacityDividedByResizeFactor;
+    private Integer[] set;
     private int length;
 
     public RandomizedSet() {
-        initialCapacity = 100;
+        random = new Random();
         loadFactor = 0.5;
         resizeFactor = 2;
+        loadFactorDividedByResizeFactor = loadFactor / resizeFactor;
+        initialCapacity = 16;
         capacity = initialCapacity;
+        precalculateCapacityRelatedFields();
         set = new Integer[capacity];
-        random = new Random();
+    }
+
+    private void precalculateCapacityRelatedFields() {
+        capacityMultipliedByLoadFactor = capacity * loadFactor;
+        capacityDividedByResizeFactor = (double) capacity / resizeFactor;
     }
 
     public boolean insert(int val) {
-        var index = find(val);
+        var index = findIndex(val);
         if (set[index] != null) {
             return false;
         }
@@ -29,7 +39,7 @@ class RandomizedSet {
         set[index] = val;
         length++;
 
-        if (length > capacity * loadFactor) {
+        if (length > capacityMultipliedByLoadFactor) {
             resize(resizeFactor * capacity);
         }
 
@@ -39,6 +49,7 @@ class RandomizedSet {
     private void resize(int newCapacity) {
         var oldSet = set;
         capacity = newCapacity;
+        precalculateCapacityRelatedFields();
         set = new Integer[capacity];
         for (Integer val : oldSet) {
             if (val != null) {
@@ -48,7 +59,7 @@ class RandomizedSet {
     }
 
     public boolean remove(int val) {
-        var index = find(val);
+        var index = findIndex(val);
         if (set[index] == null) {
             return false;
         }
@@ -56,8 +67,8 @@ class RandomizedSet {
         set[index] = null;
         length--;
 
-        if (capacity > initialCapacity && length < capacity * loadFactor * loadFactor) {
-            resize(capacity / resizeFactor);
+        if (capacity > initialCapacity && length / capacityDividedByResizeFactor < loadFactorDividedByResizeFactor) {
+            resize((int) capacityDividedByResizeFactor);
         }
 
         return true;
@@ -72,13 +83,14 @@ class RandomizedSet {
     }
 
     private int hash(int val) {
-        return val % capacity;
+        long unsigned = val & 0xffffffffL;
+        return (int) (unsigned % capacity);
     }
 
     /**
-     * @return internal index of val present in set or insertion index for the val.
+     * @return index of val present in set or insertion index for the val.
      */
-    private int find(int val) {
+    private int findIndex(int val) {
         var index = hash(val);
         while (set[index] != null) {
             if (set[index] == val) {
