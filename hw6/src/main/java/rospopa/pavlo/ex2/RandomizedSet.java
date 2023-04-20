@@ -77,7 +77,7 @@ class RandomizedSet {
     }
 
     public int getRandom() {
-        for (var i = random.nextInt(capacity); ; i = (i + 1) % capacity) {
+        for (var i = random.nextInt(capacity); ; i = random.nextInt(capacity)) {
             var entry = set[i];
             if (entry != null && !entry.removed) {
                 return entry.val;
