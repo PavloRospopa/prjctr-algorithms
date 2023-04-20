@@ -5,6 +5,8 @@ class MyHashMap {
     private final int capacity;
 
     public MyHashMap() {
+        // the problem sets a constraint that there will be at most 10^4 calls to the map.
+        // this allows us to estimate required map capacity in the worst case (10^4 / load_factor (0.75) = 53334)
         capacity = 53334;
         arr = new Entry[capacity];
     }
