@@ -1,33 +1,27 @@
 package rospopa.pavlo.ex1;
 
 class MyHashMap {
-    private final int a;
-    private final int b;
     private final Entry[] arr;
     private final int capacity;
-    private int length;
 
     public MyHashMap() {
         capacity = 53334;
         arr = new Entry[capacity];
-        a = 1009;
-        b = 9973;
     }
 
     public void put(int key, int value) {
-        var index = hash(key) % capacity;
+        var index = hash(key);
         var head = arr[index];
         var entry = findEntry(key, head);
         if (entry != null) {
             entry.value = value;
         } else {
             arr[index] = new Entry(key, value, head);
-            length++;
         }
     }
 
     public int get(int key) {
-        var index = hash(key) % capacity;
+        var index = hash(key);
         var head = arr[index];
         var entry = findEntry(key, head);
         return entry != null ? entry.value : -1;
@@ -45,7 +39,7 @@ class MyHashMap {
     }
 
     public void remove(int key) {
-        var index = hash(key) % capacity;
+        var index = hash(key);
         var head = arr[index];
         var sentinel = new Entry(-1, -1, head);
         for (var entry = sentinel; entry != null; entry = entry.next) {
@@ -57,11 +51,10 @@ class MyHashMap {
         }
 
         arr[index] = sentinel.next;
-        length--;
     }
 
     private int hash(int key) {
-        return a * key + b;
+        return key % capacity;
     }
 
     static class Entry {
