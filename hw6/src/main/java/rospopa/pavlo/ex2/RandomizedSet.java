@@ -11,7 +11,7 @@ class RandomizedSet {
     private int capacity;
     private double capacityMultipliedByLoadFactor;
     private double capacityDividedByResizeFactor;
-    private Integer[] set;
+    private Entry[] set;
     private int length;
 
     public RandomizedSet() {
@@ -22,7 +22,7 @@ class RandomizedSet {
         initialCapacity = 16;
         capacity = initialCapacity;
         precalculateCapacityRelatedFields();
-        set = new Integer[capacity];
+        set = new Entry[capacity];
     }
 
     private void precalculateCapacityRelatedFields() {
@@ -32,11 +32,12 @@ class RandomizedSet {
 
     public boolean insert(int val) {
         var index = findIndex(val);
-        if (set[index] != null) {
+        var entry = set[index];
+        if (entry != null && !entry.removed) {
             return false;
         }
 
-        set[index] = val;
+        set[index] = new Entry(val);
         length++;
 
         if (length > capacityMultipliedByLoadFactor) {
@@ -50,21 +51,22 @@ class RandomizedSet {
         var oldSet = set;
         capacity = newCapacity;
         precalculateCapacityRelatedFields();
-        set = new Integer[capacity];
-        for (Integer val : oldSet) {
-            if (val != null) {
-                insert(val);
+        set = new Entry[capacity];
+        for (Entry entry : oldSet) {
+            if (entry != null && !entry.removed) {
+                insert(entry.val);
             }
         }
     }
 
     public boolean remove(int val) {
         var index = findIndex(val);
-        if (set[index] == null) {
+        var entry = set[index];
+        if (entry == null || entry.removed) {
             return false;
         }
 
-        set[index] = null;
+        entry.removed = true;
         length--;
 
         if (capacity > initialCapacity && length / capacityDividedByResizeFactor < loadFactorDividedByResizeFactor) {
@@ -75,11 +77,12 @@ class RandomizedSet {
     }
 
     public int getRandom() {
-        var index = random.nextInt(capacity);
-        while (set[index] == null) {
-            index = (index + 1) % capacity;
+        for (var i = random.nextInt(capacity); ; i = (i + 1) % capacity) {
+            var entry = set[i];
+            if (entry != null && !entry.removed) {
+                return entry.val;
+            }
         }
-        return set[index];
     }
 
     private int hash(int val) {
@@ -87,17 +90,24 @@ class RandomizedSet {
         return (int) (unsigned % capacity);
     }
 
-    /**
-     * @return index of val present in set or insertion index for the val.
-     */
+    // returns insertion index for entry if it does not exist in set.
     private int findIndex(int val) {
         var index = hash(val);
         while (set[index] != null) {
-            if (set[index] == val) {
+            if (set[index].val == val) {
                 return index;
             }
             index = (index + 1) % capacity;
         }
         return index;
+    }
+
+    private static class Entry {
+        private final int val;
+        private boolean removed;
+
+        public Entry(int val) {
+            this.val = val;
+        }
     }
 }
