@@ -8,7 +8,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public class Solution {
+public class BacktrackingRecursionSolution {
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var n = Integer.parseInt(reader.readLine());
