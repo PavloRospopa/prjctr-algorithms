@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.min;
 
 public class Solution {
     public static void main(String[] args) throws IOException {
@@ -16,51 +15,31 @@ public class Solution {
         var myUnits = toIntArr(reader.readLine().split(" "));
         var opponentsUnits = toIntArr(reader.readLine().split(" "));
 
-        var maxStrength = new Strength();
-        var myUnitsUsed = new boolean[n];
-        var opponentsUnitsUsed = new boolean[n];
-        gen(n, emptyList(), myUnits, opponentsUnits, myUnitsUsed, opponentsUnitsUsed, maxStrength);
+        var frontline = new Frontline(n, myUnits, opponentsUnits);
+        gen(0, emptyList(), frontline);
 
-        System.out.println(maxStrength.val);
+        System.out.println(frontline.bestOutcomeOfBattle);
     }
 
-    static void gen(int n, List<UnitPair> prefix, int[] myUnits, int[] opponentsUnits, boolean[] myUnitsUsed,
-                    boolean[] opponentsUnitsUsed, Strength maxStrength) {
-        if (n == 0) {
-            System.out.println(prefix.toString());
-            var remainingStrength = calculateStrengthAfterBattle(prefix, myUnits, opponentsUnits);
-            if (remainingStrength > maxStrength.val) {
-                maxStrength.val = remainingStrength;
+    static void gen(int opponentsUnitToDeploy, List<UnitPair> combatLineup, Frontline frontline) {
+        if (opponentsUnitToDeploy == frontline.battleSize) {
+            System.out.println(combatLineup.toString());
+            var outcome = frontline.calculateOutcomeOfBattle(combatLineup);
+            if (outcome > frontline.bestOutcomeOfBattle) {
+                frontline.bestOutcomeOfBattle = outcome;
             }
             return;
         }
 
-        for (int i = 0; i < myUnits.length; i++) {
-            if (!myUnitsUsed[i]) {
-                myUnitsUsed[i] = true;
-                for (int j = 0; j < opponentsUnits.length; j++) {
-                    if (!opponentsUnitsUsed[j]) {
-                        opponentsUnitsUsed[j] = true;
-                        var newPrefix = new ArrayList<>(prefix);
-                        newPrefix.add(new UnitPair(i, j));
-                        gen(n - 1, newPrefix, myUnits, opponentsUnits, myUnitsUsed, opponentsUnitsUsed, maxStrength);
-                        opponentsUnitsUsed[j] = false;
-                    }
-                }
-                myUnitsUsed[i] = false;
+        for (var myUnit = 0; myUnit < frontline.myUnits.length; myUnit++) {
+            if (frontline.canDeployUnits(myUnit, opponentsUnitToDeploy)) {
+                frontline.deployUnits(myUnit, opponentsUnitToDeploy);
+                var updatedCombatLineup = new ArrayList<>(combatLineup);
+                updatedCombatLineup.add(new UnitPair(myUnit, opponentsUnitToDeploy));
+                gen(opponentsUnitToDeploy + 1, updatedCombatLineup, frontline);
+                frontline.concealUnits(myUnit, opponentsUnitToDeploy);
             }
         }
-    }
-
-    static int calculateStrengthAfterBattle(List<UnitPair> prefix, int[] myUnits, int[] opponentsUnits) {
-        var strength = 0;
-        for (UnitPair pair : prefix) {
-            var myUnitStrength = myUnits[pair.mine];
-            if (myUnitStrength > opponentsUnits[pair.opponents]) {
-                strength += myUnitStrength;
-            }
-        }
-        return strength;
     }
 
     static int[] toIntArr(String[] arr) {
@@ -71,8 +50,46 @@ public class Solution {
         return intArr;
     }
 
-    static class Strength {
-        int val;
+    static class Frontline {
+        private final int battleSize;
+        private final int[] myUnits;
+        private final int[] opponentsUnits;
+        private final boolean[] myUnitsDeployed;
+        private final boolean[] opponentsUnitsDeployed;
+        private int bestOutcomeOfBattle;
+
+        public Frontline(int n, int[] myUnits, int[] opponentsUnits) {
+            battleSize = n;
+            this.myUnits = myUnits;
+            this.opponentsUnits = opponentsUnits;
+            myUnitsDeployed = new boolean[n];
+            opponentsUnitsDeployed = new boolean[n];
+        }
+
+        boolean canDeployUnits(int mine, int opponents) {
+            return !myUnitsDeployed[mine] && !opponentsUnitsDeployed[opponents];
+        }
+
+        void deployUnits(int mine, int opponents) {
+            myUnitsDeployed[mine] = true;
+            opponentsUnitsDeployed[opponents] = true;
+        }
+
+        void concealUnits(int mine, int opponents) {
+            myUnitsDeployed[mine] = false;
+            opponentsUnitsDeployed[opponents] = false;
+        }
+
+        int calculateOutcomeOfBattle(List<UnitPair> combatLineup) {
+            var strength = 0;
+            for (UnitPair pair : combatLineup) {
+                var myUnit = myUnits[pair.mine];
+                if (myUnit > opponentsUnits[pair.opponents]) {
+                    strength += myUnit;
+                }
+            }
+            return strength;
+        }
     }
 
     static class UnitPair {
@@ -86,7 +103,7 @@ public class Solution {
 
         @Override
         public String toString() {
-            return String.format("[mine=%1$d:opponents=%2$d]", mine, opponents);
+            return mine + " vs " + opponents;
         }
     }
 }
