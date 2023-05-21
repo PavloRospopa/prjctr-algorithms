@@ -38,47 +38,38 @@ public class Solution {
     }
 
     private int solve() {
-        var result = 0;
+        var wins = 0;
         for (var k = m; k <= n; k++) {
-            var gameResult = playGame(1, true, k);
-            if (gameResult.bobsTurn) {
-                result++;
+            var winner = playGame(Player.B, k);
+            if (winner == Player.B) {
+                wins++;
             }
         }
 
-        return result;
+        return wins;
     }
 
-    private Turn playGame(int turn, boolean bobsTurn, int stones) {
-        if (stones < 0) {
-            return Turn.INVALID_TURN;
-        }
-        if (stones == 0) {
-            return new Turn(turn, bobsTurn, stones);
-        }
-
-        var answer = new Turn(Integer.MAX_VALUE, bobsTurn, stones);
-        for (var ti : t) {
-            var result = playGame(turn + 1, !bobsTurn, stones - ti);
-            if (result.remainingStones == 0 && result.turn < answer.turn) {
-                answer = result;
+    private Player playGame(Player currentPlayer, int k) {
+        for (int ti : t) {
+            if (k - ti == 0) {
+                return currentPlayer;
             }
         }
 
-        return answer;
+        for (int ti : t) {
+            if (k - ti > 0 && playGame(Player.opponentOf(currentPlayer), k - ti) == currentPlayer) {
+                return currentPlayer;
+            }
+        }
+
+        return Player.opponentOf(currentPlayer);
     }
 
-    static class Turn {
-        static final Turn INVALID_TURN = new Turn(Integer.MAX_VALUE, false, 0);
+    enum Player {
+        B, S;
 
-        int turn;
-        boolean bobsTurn;
-        int remainingStones;
-
-        Turn(int turn, boolean bobsTurn, int remainingStones) {
-            this.turn = turn;
-            this.bobsTurn = bobsTurn;
-            this.remainingStones = remainingStones;
+        public static Player opponentOf(Player p) {
+            return p == B ? S : B;
         }
     }
 }
