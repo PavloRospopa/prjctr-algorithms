@@ -3,18 +3,25 @@ package rospopa.pavlo.ex5_5;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.function.BiFunction;
 
 public class Solution {
     final int s;
     final int m;
     final int n;
     final int[] t;
+    final Player[] bCache;
+    final Player[] sCache;
+    final BiFunction<Player, Integer, Player> memoizedPlayGame;
 
     Solution(int s, int m, int n, int[] t) {
         this.s = s;
         this.m = m;
         this.n = n;
         this.t = t;
+        this.bCache = new Player[n + 1];
+        this.sCache = new Player[n + 1];
+        this.memoizedPlayGame = memoize(this::playGame);
     }
 
     public static void main(String[] args) throws IOException {
@@ -40,7 +47,7 @@ public class Solution {
     private int solve() {
         var wins = 0;
         for (var k = m; k <= n; k++) {
-            var winner = playGame(Player.B, k);
+            var winner = memoizedPlayGame.apply(Player.B, k);
             if (winner == Player.B) {
                 wins++;
             }
@@ -57,7 +64,7 @@ public class Solution {
         }
 
         for (int ti : t) {
-            if (k - ti > 0 && playGame(Player.opponentOf(currentPlayer), k - ti) == currentPlayer) {
+            if (k - ti > 0 && memoizedPlayGame.apply(Player.opponentOf(currentPlayer), k - ti) == currentPlayer) {
                 return currentPlayer;
             }
         }
@@ -71,5 +78,16 @@ public class Solution {
         public static Player opponentOf(Player p) {
             return p == B ? S : B;
         }
+    }
+
+    private BiFunction<Player, Integer, Player> memoize(BiFunction<Player, Integer, Player> playGameFunc) {
+        return (currentPlayer, k) -> {
+            var cache = currentPlayer == Player.B ? bCache : sCache;
+            if (cache[k] == null) {
+                var winner = playGameFunc.apply(currentPlayer, k);
+                cache[k] = winner;
+            }
+            return cache[k];
+        };
     }
 }
