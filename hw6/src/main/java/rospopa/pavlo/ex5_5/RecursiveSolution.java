@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.function.BiFunction;
 
-public class Solution {
+public class RecursiveSolution {
     final int s;
     final int m;
     final int n;
@@ -14,7 +14,7 @@ public class Solution {
     final Player[] sCache;
     final BiFunction<Player, Integer, Player> memoizedPlayGame;
 
-    Solution(int s, int m, int n, int[] t) {
+    RecursiveSolution(int s, int m, int n, int[] t) {
         this.s = s;
         this.m = m;
         this.n = n;
@@ -32,7 +32,7 @@ public class Solution {
         var n = Integer.parseInt(input[2]);
         var t = toIntArr(reader.readLine().split(" "));
 
-        var solution = new Solution(s, m, n, t);
+        var solution = new RecursiveSolution(s, m, n, t);
         System.out.println(solution.solve());
     }
 
