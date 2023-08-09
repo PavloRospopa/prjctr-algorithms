@@ -3,14 +3,16 @@ package rospopa.pavlo.ex2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 public class QHeap1Solution {
-    private static final int MAX_HEAP_CAPACITY = 100000;
+    private static final int MAX_NUMBER_OF_OPERATIONS = 100000;
 
     public static void main(String[] args) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
         var q = Integer.parseInt(reader.readLine());
-        var heap = new MinIntHeap(MAX_HEAP_CAPACITY);
+        var heap = new QHeap(MAX_NUMBER_OF_OPERATIONS);
         for (int i = 0; i < q; i++) {
             var input = reader.readLine().split(" ");
             var operator = input[0];
@@ -28,6 +30,36 @@ public class QHeap1Solution {
         }
     }
 
+    static class QHeap {
+        MinIntHeap heap;
+        Set<Integer> deleted;
+
+        QHeap(int capacity) {
+            heap = new MinIntHeap(capacity);
+            deleted = new HashSet<>();
+        }
+
+        void insert(int v) {
+            if (deleted.contains(v)) {
+                deleted.remove(v);
+            } else {
+                heap.insert(v);
+            }
+        }
+
+        void delete(int v) {
+            deleted.add(v);
+        }
+
+        int peek() {
+            while (deleted.contains(heap.peek())) {
+                deleted.remove(heap.min());
+            }
+
+            return heap.peek();
+        }
+    }
+
     static class MinIntHeap {
         int[] arr;
         int size;
@@ -41,18 +73,15 @@ public class QHeap1Solution {
             siftup(size);
         }
 
-        void delete(int v) {
-            int i = 1;
-            while (arr[i] != v) {
-                i++;
-            }
-
-            arr[i] = arr[size--];
-            siftdown(i);
-        }
-
         int peek() {
             return arr[1];
+        }
+
+        int min() {
+            var min = arr[1];
+            swap(1, size--);
+            siftdown(1);
+            return min;
         }
 
         private void siftdown(int i) {
