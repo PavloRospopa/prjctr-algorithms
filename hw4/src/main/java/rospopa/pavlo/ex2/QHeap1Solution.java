@@ -89,7 +89,8 @@ public class QHeap1Solution {
                 var j = i;
                 if (arr[2 * i] < arr[j]) {
                     j = 2 * i;
-                } else if (2 * i + 1 <= size && arr[2 * i + 1] < arr[j]) {
+                }
+                if (2 * i + 1 <= size && arr[2 * i + 1] < arr[j]) {
                     j = 2 * i + 1;
                 }
                 if (j == i) {
