@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 class Twitter {
+    private final Map<Integer, Set<Integer>> followingOfUser = new HashMap<>();
     private final Map<Integer, Set<Integer>> followersOfUser = new HashMap<>();
     private final Map<Integer, LinkedList<Tweet>> latestTweetsOfUser = new HashMap<>();
     private final Map<Integer, PriorityQueue<Tweet>> feedOfUser = new HashMap<>();
@@ -28,12 +29,15 @@ class Twitter {
     }
 
     public List<Integer> getNewsFeed(int userId) {
+        var following = getFollowingOfUser(userId);
         var userFeed = getFeedOfUser(userId);
         var newsFeed = new ArrayList<Tweet>(10);
 
         while (newsFeed.size() != 10 && !userFeed.isEmpty()) {
             var tweet = userFeed.remove();
-            newsFeed.add(tweet);
+            if (following.contains(tweet.userId)) {
+                newsFeed.add(tweet);
+            }
         }
 
         userFeed.addAll(newsFeed);
@@ -46,32 +50,17 @@ class Twitter {
         if (followers.contains(followerId) || followerId == followeeId) {
             return;
         }
-
         followers.add(followerId);
 
+        var following = getFollowingOfUser(followerId);
+        following.add(followeeId);
         var latestTweets = getLatestTweetsOfUser(followeeId);
         getFeedOfUser(followerId).addAll(latestTweets);
     }
 
     public void unfollow(int followerId, int followeeId) {
-        var followers = getFollowersOfUser(followeeId);
-        if (!followers.contains(followerId) || followerId == followeeId) {
-            return;
-        }
-
-        followers.remove(followerId);
-
-        var followerFeed = getFeedOfUser(followerId);
-        var newsFeed = new ArrayList<Tweet>(10);
-
-        while (newsFeed.size() != 10 && !followerFeed.isEmpty()) {
-            var tweet = followerFeed.remove();
-            if (tweet.userId != followeeId) {
-                newsFeed.add(tweet);
-            }
-        }
-
-        followerFeed.addAll(newsFeed);
+        getFollowersOfUser(followeeId).remove(followerId);
+        getFollowingOfUser(followerId).remove(followeeId);
     }
 
     private LinkedList<Tweet> getLatestTweetsOfUser(int userId) {
@@ -96,6 +85,14 @@ class Twitter {
             var followers = new HashSet<Integer>();
             followers.add(self);
             return followers;
+        });
+    }
+
+    private Set<Integer> getFollowingOfUser(int userId) {
+        return followingOfUser.computeIfAbsent(userId, self -> {
+            var following = new HashSet<Integer>();
+            following.add(self);
+            return following;
         });
     }
 
