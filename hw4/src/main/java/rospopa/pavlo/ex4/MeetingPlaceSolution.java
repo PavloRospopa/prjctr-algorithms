@@ -3,8 +3,6 @@ package rospopa.pavlo.ex4;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class MeetingPlaceSolution {
     public static final double UPPER_BOUND = Math.pow(10, 9);
@@ -48,37 +46,15 @@ public class MeetingPlaceSolution {
     }
 
     static boolean canAllMeetInPlaceInTime(double t, Friend[] friends) {
-        var ranges = new RangeBorder[friends.length * 2];
-        for (int i = 0, j = 0; i < friends.length; i++, j += 2) {
-            var friend = friends[i];
-            var southRangeBorder = new RangeBorder(Math.max(friend.x - friend.v * t, 1), -1);
-            var northRangeBorder = new RangeBorder(Math.min(friend.x + friend.v * t, UPPER_BOUND), 1);
-            ranges[j] = southRangeBorder;
-            ranges[j + 1] = northRangeBorder;
+        double l = 1, r = UPPER_BOUND;
+        for (int i = 0; i < friends.length; i++) {
+            var f = friends[i];
+            l = Math.max(l, f.x - f.v * t);
+            r = Math.min(r, f.x + f.v * t);
         }
-        Arrays.sort(ranges, Comparator.comparing(RangeBorder::x).thenComparing(RangeBorder::type));
-
-        var friendsWhoMet = 0;
-        for (var i = 0; i < ranges.length; i++) {
-            var rangeBorder = ranges[i];
-            if (rangeBorder.type == -1) {
-                friendsWhoMet++;
-                if (friendsWhoMet == friends.length) {
-                    return true;
-                }
-            } else if (rangeBorder.type == 1) {
-                return false;
-            }
-        }
-
-        return false;
+        return l <= r;
     }
 
     record Friend(int x, int v) {
-    }
-
-    // type = -1 - south border
-    // type = 1 - north border
-    record RangeBorder(double x, int type) {
     }
 }
