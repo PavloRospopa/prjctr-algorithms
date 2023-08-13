@@ -35,7 +35,7 @@ public class MeetingPlaceSolution {
         var good = UPPER_BOUND;
         var bad = 0.0;
 
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 50; i++) {
             var m = (good + bad) / 2;
             if (canAllMeetInPlaceInTime(m, friends)) {
                 good = m;
